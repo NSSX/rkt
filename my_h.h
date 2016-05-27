@@ -35,6 +35,14 @@ typedef struct s_vec3d
   double z;
 }		t_vec3d;
 
+typedef struct s_pars
+{
+  int             i;
+  char    *val1;
+  char    *val2;
+  char    *val3;
+}		t_pars;
+
 typedef struct s_effect
 {
   t_vec3d bri;

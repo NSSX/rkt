@@ -122,57 +122,68 @@ char	*ft_strjoin_carac(char const *s1, char s2)
 	return (chaine);
 }
 
+void norme_val1(char *chaine, t_pars *pars)
+{
+  if ((chaine[pars->i + 1] >= '0' && chaine[pars->i + 1] <= '9') || chaine[pars->i + 1] == '-')
+    pars->i++;
+  else
+    err();
+  while (chaine[pars->i] != ',' && chaine[pars->i] != '\0')
+    {
+      pars->val1 = ft_strjoin_carac(pars->val1, chaine[pars->i]);
+      pars->i++;
+    }
+  if ((chaine[pars->i + 1] >= '0' && chaine[pars->i + 1] <= '9')|| chaine[pars->i + 1] == '-')
+    pars->i++;
+  else
+    err();  
+}
+
+void norme_val2(char *chaine, t_pars *pars)
+{
+  while (chaine[pars->i] != ',' && chaine[pars->i] != '\0')
+    {
+      pars->val2 = ft_strjoin_carac(pars->val2, chaine[pars->i]);
+      pars->i++;
+    }
+  if ((chaine[pars->i + 1] >= '0' && chaine[pars->i + 1] <= '9')|| chaine[pars->i + 1] == '-')
+    pars->i++;
+  else
+    err();
+}
+
+void norme_val3(char *chaine, t_pars *pars)
+{
+  while (chaine[pars->i] != ',' && chaine[pars->i] != '\0' && chaine[pars->i] != ')')
+    {
+      pars->val3 = ft_strjoin_carac(pars->val3, chaine[pars->i]);
+      pars->i++;
+    }
+}
+
 t_vec3d	*vec3d(t_env *e, char *chaine)
 {
-	int		i;
-	char	*val1;
-	char	*val2;
-	char	*val3;
-	t_vec3d	*tab;
+  t_pars pars;
+  t_vec3d *tab;
 
-
-	tab = malloc(sizeof(int) * 4);
-	val1 = ft_memalloc(ft_strlen(chaine));
-	val2 = ft_memalloc(ft_strlen(chaine));
-	val3 = ft_memalloc(ft_strlen(chaine));
-	i = 0;
-	while (chaine != '\0')
+	tab = malloc(sizeof(t_vec3d) * 1);
+	pars.val1 = ft_memalloc(ft_strlen(chaine));
+	pars.val2 = ft_memalloc(ft_strlen(chaine));
+	pars.val3 = ft_memalloc(ft_strlen(chaine));
+	pars.i = 0;
+	while (chaine[pars.i] != '\0')
 	{
-		if (chaine[i] == '(')
+		if (chaine[pars.i] == '(')
 		{
-		  if ((chaine[i + 1] >= '0' && chaine[i + 1] <= '9') || chaine[i + 1] == '-')
-		    i++;
-			else 
-				err();
-			while (chaine[i] != ',' && chaine[i] != '\0')
-			{
-				val1 = ft_strjoin_carac(val1, chaine[i]);
-				i++;
-			}
-			if ((chaine[i + 1] >= '0' && chaine[i + 1] <= '9')|| chaine[i + 1] == '-')
-				i++;
-			else
-			  err();
-			while (chaine[i] != ',' && chaine[i] != '\0')
-			{
-				val2 = ft_strjoin_carac(val2, chaine[i]);
-				i++;
-			}
-			if ((chaine[i + 1] >= '0' && chaine[i + 1] <= '9')|| chaine[i + 1] == '-')
-				i++;
-			else
-				err();
-			while (chaine[i] != ',' && chaine[i] != '\0' && chaine[i] != ')')
-			{
-				val3 = ft_strjoin_carac(val3, chaine[i]);
-				i++;
-			}
-			tab->x = ft_atoi(val1);
-			tab->y = ft_atoi(val2);
-			tab->z = ft_atoi(val3);
-			return (tab);
+		  norme_val1(chaine, &pars);
+		  norme_val2(chaine, &pars);
+		  norme_val3(chaine, &pars);
+		  tab->x = ft_atoi(pars.val1);
+		  tab->y = ft_atoi(pars.val2);
+		  tab->z = ft_atoi(pars.val3);
+		  return (tab);
 		}
-		i++;
+		pars.i++;
 	}
 	return (NULL);
 }

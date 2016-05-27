@@ -216,11 +216,118 @@ double		get_single_var(char *chaine)
 	return (val);
 }
 
+void trait_obj(char *here, t_env *e, t_obj *obj)
+{
+  char    *here2;
+  char    *temp;
+
+  temp = chaine(here);
+  here[0] = 'W';
+  if(temp == NULL)
+    return;
+  if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->pos = *vec3d(e, here2);
+    }
+  if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->color = *vec3d(e, here2);
+      obj->color.x = lim(obj->color.x / 256, 0, 1);
+      obj->color.y = lim(obj->color.y / 256, 0, 1);
+      obj->color.z = lim(obj->color.z / 256, 0, 1);
+    }
+  if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->size = get_single_var(here2);
+      obj->size /= 100;
+    }
+  if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->rot = *vec3d(e, here2);
+    }
+}
+
+void trait_pov(char *here, t_env *e, t_obj *obj)
+{
+  char    *here2;
+  char    *temp;
+
+  temp = chaine(here);
+  here[0] = 'W';
+  if(temp == NULL)
+    return;
+  if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->pos = *vec3d(e, here2);
+    }
+  if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->color = *vec3d(e, here2);
+    }
+  if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->size = get_single_var(here2);
+    }
+  if((here2 = ft_strstr(temp,"dir(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->rot = *vec3d(e, here2);
+    }
+}
+
+void trait_spot(char *here, t_env *e, t_obj *obj)
+{
+  char    *here2;
+  char    *temp;
+
+  temp = chaine(here);
+  here[0] = 'W';
+  if(temp == NULL)
+    return;
+  if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->pos = *vec3d(e, here2);
+    }
+  if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->color = *vec3d(e, here2);
+      obj->color.x = lim(obj->color.x / 256, 0, 1);
+      obj->color.y = lim(obj->color.y / 256, 0, 1);
+      obj->color.z = lim(obj->color.z / 256, 0, 1);
+    }
+  if((here2 = ft_strstr(temp,"int(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->intens = get_single_var(here2);
+      obj->intens =  lim(obj->intens, 0.0, 99.0);
+      obj->intens /= 100;
+    }
+  if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->size = get_single_var(here2);
+      obj->size /= 100;
+    }
+  if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
+    {
+      here2 = chaine2(here2);
+      obj->rot = *vec3d(e, here2);
+    }
+}
+
+
 void		traitement(char *file, t_env *e)
 {
 	char	*here;
-	char	*here2;
-	char	*temp;
 	t_vec3d	*pos;
 	int		end;
 	t_obj	*obj;
@@ -228,207 +335,43 @@ void		traitement(char *file, t_env *e)
 	end = 0;
 	if((here = ft_strstr(file,"sphere{\n")) && here != NULL)
 	{
-		obj = add_list(e);
-		temp = chaine(here);
-		here[0] = 'W';
-		if(temp == NULL)
-			return;
-		if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->pos = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->color = *vec3d(e, here2);
-			obj->color.x = lim(obj->color.x / 256, 0, 1);
-			obj->color.y = lim(obj->color.y / 256, 0, 1);
-			obj->color.z = lim(obj->color.z / 256, 0, 1);
-		}
-		if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->size = get_single_var(here2);
-			obj->size /= 100;
-		}
-		if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->rot = *vec3d(e, here2);
-		}
-		obj->type = 1;
-		end++;
+	  obj = add_list(e);
+	  trait_obj(here, e, obj);
+	  obj->type = 1;
+	  end++;
 	}
 	if((here = ft_strstr(file,"cone{\n")) && here != NULL)
 	{
 		obj = add_list(e);
-		temp = chaine(here);
-		here[0] = 'W';
-		if(temp == NULL)
-			return;
-		if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->pos = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->color = *vec3d(e, here2);
-			obj->color.x = lim(obj->color.x / 256.0, 0.0, 1.0);
-			obj->color.y = lim(obj->color.y / 256.0, 0.0, 1.0);
-			obj->color.z = lim(obj->color.z / 256.0, 0.0, 1.0);
-		}
-		if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->size = get_single_var(here2);
-			obj->size /= 100;
-		}
-		if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->rot = *vec3d(e, here2);
-		}
+		trait_obj(here, e, obj);
 		obj->type = 2;
 		end++;
 	}
 	if((here = ft_strstr(file,"cylinder{\n")) && here != NULL)
 	{
 		obj = add_list(e);
-		temp = chaine(here);
-		here[0] = 'W';
-		if(temp == NULL)
-			return;
-		if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->pos = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->color = *vec3d(e, here2);
-			obj->color.x = lim(obj->color.x / 256.0, 0.0, 1.0);
-			obj->color.y = lim(obj->color.y / 256.0, 0.0, 1.0);
-			obj->color.z = lim(obj->color.z / 256.0, 0.0, 1.0);
-		}
-		if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->size = get_single_var(here2);
-			obj->size /= 100;
-		}
-		if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->rot = *vec3d(e, here2);
-		}
+		trait_obj(here, e, obj);
 		obj->type = 3;
 		end++;
 	}
 	if((here = ft_strstr(file,"plane{\n")) && here != NULL)
 	{
 		obj = add_list(e);
-		temp = chaine(here);
-		here[0] = 'W';
-		if(temp == NULL)
-			return;
-		if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->pos = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->color = *vec3d(e, here2);
-			obj->color.x = lim(obj->color.x / 256.0, 0.0, 1.0);
-			obj->color.y = lim(obj->color.y / 256.0, 0.0, 1.0);
-			obj->color.z = lim(obj->color.z / 256.0, 0.0, 1.0);
-		}
-		if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->size = get_single_var(here2);
-		}
-		if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->rot = *vec3d(e, here2);
-		}
+		trait_obj(here, e, obj);
 		obj->type = 0;
 		end++;
 	}
 	if((here = ft_strstr(file,"pov{\n")) && here != NULL)
 	{
 		obj = add_list(e);
-		temp = chaine(here);
-		here[0] = 'W';
-		if(temp == NULL)
-			return;
-		if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->pos = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->color = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->size = get_single_var(here2);
-		}
-		if((here2 = ft_strstr(temp,"dir(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->rot = *vec3d(e, here2);
-		}
+		trait_pov(here, e, obj);
 		obj->type = 9;
 		end++;
 	}
 	if((here = ft_strstr(file,"spot{\n")) && here != NULL)
 	{
 		obj = add_list(e);
-		temp = chaine(here);
-		here[0] = 'W';
-		if(temp == NULL)
-			return;
-		if((here2 = ft_strstr(temp,"pos(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->pos = *vec3d(e, here2);
-		}
-		if((here2 = ft_strstr(temp,"color(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->color = *vec3d(e, here2);
-			obj->color.x = lim(obj->color.x / 256.0, 0.0, 1.0);
-			obj->color.y = lim(obj->color.y / 256.0, 0.0, 1.0);
-			obj->color.z = lim(obj->color.z / 256.0, 0.0, 1.0);
-		}
-		if((here2 = ft_strstr(temp,"int(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->intens = get_single_var(here2);
-			obj->intens =  lim(obj->intens, 0.0, 99.0);
-			obj->intens /= 100;
-		}
-		if((here2 = ft_strstr(temp,"size(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->size = get_single_var(here2);
-			obj->size /= 100;
-		}
-		if((here2 = ft_strstr(temp,"rot(")) && here2 != NULL)
-		{
-			here2 = chaine2(here2);
-			obj->rot = *vec3d(e, here2);
-		}
+		trait_spot(here, e, obj);
 		obj->type = 8;
 		end++;
 	}
